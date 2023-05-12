@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer, useMemo } from "react";
+import React, { useEffect, useState, useReducer, useMemo, useRef } from "react";
 import { REDUCER_ACTIONS } from "../config";
 
 const initialState = {
@@ -21,9 +21,13 @@ const Character = () => {
   const [characters, setCharacters] = useState([]);
   const [favorites, dispatch] = useReducer(favoriteReducer, initialState);
   const [search, setSearch] = useState("");
+  const searchInput = useRef(null);
 
-  const handleSearch = (event) => {
-    setSearch(event.target.value);
+  const handleSearch = () => {
+    // when we have more than one input, we can use the ref to get the value of the input
+    // setSearch(event.target.value);
+    // Ref is a reference to an element in the DOM
+    setSearch(searchInput.current.value);
   };
 
   const filteredUsers = useMemo(
@@ -51,7 +55,7 @@ const Character = () => {
       ))}
       
       <div>
-        <input type="text" value={search} onChange={handleSearch} />
+        <input type="text" value={search} ref={searchInput} onChange={handleSearch} />
       </div>
       
       {filteredUsers.map((character) => (
