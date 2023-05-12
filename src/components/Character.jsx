@@ -1,5 +1,13 @@
-import React, { useEffect, useState, useReducer, useMemo, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useReducer,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { REDUCER_ACTIONS } from "../config";
+import Search from "./Search";
 
 const initialState = {
   favorites: [],
@@ -23,12 +31,12 @@ const Character = () => {
   const [search, setSearch] = useState("");
   const searchInput = useRef(null);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     // when we have more than one input, we can use the ref to get the value of the input
     // setSearch(event.target.value);
     // Ref is a reference to an element in the DOM
     setSearch(searchInput.current.value);
-  };
+  }, []);
 
   const filteredUsers = useMemo(
     () =>
@@ -53,11 +61,13 @@ const Character = () => {
       {favorites.favorites.map((favorite) => (
         <li key={favorite.id}>{favorite.name}</li>
       ))}
-      
-      <div>
-        <input type="text" value={search} ref={searchInput} onChange={handleSearch} />
-      </div>
-      
+
+      <Search
+        search={search}
+        searchInput={searchInput}
+        handleSearch={handleSearch}
+      />
+
       {filteredUsers.map((character) => (
         <div className="item" key={character.id}>
           <h2>{character.name}</h2>
