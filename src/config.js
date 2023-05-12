@@ -1,0 +1,3 @@
+export const REDUCER_ACTIONS = {
+  ADD_TO_FAVORITE: "ADD_TO_FAVORITE",
+};

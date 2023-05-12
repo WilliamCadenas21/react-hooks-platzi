@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useMemo } from "react";
+import { REDUCER_ACTIONS } from "../config";
 
 const initialState = {
   favorites: [],
@@ -6,7 +7,7 @@ const initialState = {
 
 const favoriteReducer = (state, action) => {
   switch (action.type) {
-    case "ADD_TO_FAVORITE":
+    case REDUCER_ACTIONS.ADD_TO_FAVORITE:
       return {
         ...state,
         favorites: [...state.favorites, action.payload],
@@ -19,9 +20,22 @@ const favoriteReducer = (state, action) => {
 const Character = () => {
   const [characters, setCharacters] = useState([]);
   const [favorites, dispatch] = useReducer(favoriteReducer, initialState);
+  const [search, setSearch] = useState("");
+
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
+
+  const filteredUsers = useMemo(
+    () =>
+      characters.filter((user) => {
+        return user.name.toLowerCase().includes(search.toLowerCase());
+      }),
+    [characters, search]
+  );
 
   const handleClick = (favorite) => {
-    dispatch({ type: "ADD_TO_FAVORITE", payload: favorite });
+    dispatch({ type: REDUCER_ACTIONS.ADD_TO_FAVORITE, payload: favorite });
   };
 
   useEffect(() => {
@@ -35,7 +49,12 @@ const Character = () => {
       {favorites.favorites.map((favorite) => (
         <li key={favorite.id}>{favorite.name}</li>
       ))}
-      {characters.map((character) => (
+      
+      <div>
+        <input type="text" value={search} onChange={handleSearch} />
+      </div>
+      
+      {filteredUsers.map((character) => (
         <div className="item" key={character.id}>
           <h2>{character.name}</h2>
           <button type="button" onClick={() => handleClick(character)}>
